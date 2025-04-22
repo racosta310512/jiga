@@ -39,7 +39,7 @@ const Navbar = () => {
             />
           </svg>
         </button>
-        <nav className="hidden lg:flex space-x-4 text-white/90 text-sm font-medium">
+        <nav className="hidden lg:flex flex-1 justify-end space-x-4 text-white/90 text-sm font-medium">
           <Link to="/" className="hover:text-green-400 hover:underline transition duration-200">
             INÍCIO
           </Link>
@@ -59,7 +59,7 @@ const Navbar = () => {
       </div>
       {/* Menú móvil */}
       {isMenuOpen && (
-        <nav className="lg:hidden mt-4 space-y-2 text-white/90 text-sm font-medium">
+        <nav className="lg:hidden mt-4 space-y-2 text-white/90 text-sm font-medium text-right">
           <Link to="/" className="block hover:text-green-400 hover:underline transition duration-200">
             INÍCIO
           </Link>
