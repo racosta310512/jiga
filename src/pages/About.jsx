@@ -7,6 +7,7 @@ import {
   FaShieldAlt,
   FaLightbulb,
 } from "react-icons/fa";
+import Quem_somos from "../assets/quienes_somos.jpg"
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -123,7 +124,7 @@ export default function About() {
             className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-lg"
           >
             <img
-              src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=800&q=80"
+              src={Quem_somos}
               alt="Equipe de tecnologia"
               className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
             />
@@ -156,7 +157,7 @@ export default function About() {
       {/* Seção Missão, Visão e Valores */}
       <section
         ref={missionVisionRef}
-        className="py-24 px-6 md:px-12 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white"
+        className="py-24 px-6 md:px-12 bg-gradient-to-br from-[#0abab5] via-[#302b63] to-[#24243e] text-white"
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16">Missão, Visão e Valores</h2>
