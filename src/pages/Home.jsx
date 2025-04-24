@@ -1,29 +1,3 @@
-/*export default function Home() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 px-12 py-20 gap-10 items-center">
-      <div>
-        <h1 className="text-5xl font-bold mb-6">INOVAÇÃO TECNOLÓGICA</h1>
-        <p className="text-white/80 mb-6">
-          Na jiga Soluções, estamos moldando o futuro com soluções digitais inteligentes. Nossa missão é transformar ideias em experiências tecnológicas reais que impulsionam empresas para o sucesso.
-        </p>
-        <button className="bg-cyan-400 text-black font-semibold px-6 py-3 rounded-full shadow hover:bg-cyan-300 transition">SAIBA MAIS</button>
-      </div>
-      <div className="flex justify-center">
-        <div className="w-[260px] h-[500px] bg-gradient-to-tr from-[#330066] to-[#9900cc] rounded-[2rem] shadow-2xl relative overflow-hidden border-4 border-cyan-400">
-          <div className="absolute top-4 left-4 w-4 h-4 rounded-full bg-cyan-400"></div>
-          <div className="absolute top-4 right-4 w-16 h-3 bg-cyan-400 rounded-full"></div>
-          <div className="absolute inset-0 p-4 flex flex-col gap-4">
-            <div className="w-full h-10 bg-white/20 rounded-xl"></div>
-            <div className="w-3/4 h-10 bg-white/20 rounded-xl"></div>
-            <div className="w-4/5 h-10 bg-white/20 rounded-xl"></div>
-            <div className="w-2/3 h-10 bg-white/20 rounded-xl"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}*/
-
 import { useEffect } from 'react';
 import gsap from 'gsap';
 import backgroundImage from '../assets/3381454.jpg';
