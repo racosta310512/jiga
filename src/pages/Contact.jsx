@@ -1,51 +1,95 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
+  const sectionRef = useRef();
+  const formRef = useRef();
+  const mapRef = useRef();
+
+  useEffect(() => {
+    gsap.fromTo(
+      sectionRef.current,
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+    );
+
+    gsap.fromTo(
+      [formRef.current, mapRef.current],
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        stagger: 0.3,
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: "top 80%",
+          toggleActions: "play reverse play reverse",
+        },
+      }
+    );
+  }, []);
+
   return (
-    <div className="p-8 bg-gray-900 rounded-lg shadow-lg">
-      <h2 className="text-4xl font-semibold text-center text-white mb-8">Entre em contato</h2>
+    <div
+      ref={sectionRef}
+      className="bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen py-24 px-6 md:px-12 text-white"
+    >
+      <div className="max-w-7xl mx-auto text-center">
+        <h2 className="text-4xl md:text-5xl font-bold mb-8">Entre em Contato</h2>
+        <p className="text-lg text-white/70 mb-16 max-w-3xl mx-auto leading-relaxed">
+          Fale conosco para saber como podemos ajudar a transformar seu negócio com inovação e tecnologia.
+        </p>
+      </div>
 
       {/* Contenedor de las dos columnas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Columna del formulario */}
-        <section className="p-6 bg-gray-800 rounded-lg shadow-md">
-          <h3 className="text-2xl font-semibold text-white mb-6">Envie uma mensagem</h3>
+        <section
+          ref={formRef}
+          className="bg-[#1F0037] bg-opacity-60 p-8 rounded-2xl shadow-xl"
+        >
+          <h3 className="text-2xl font-semibold mb-6">Envie uma mensagem</h3>
           <form className="space-y-6">
             <div>
-              <label className="block text-white/80" htmlFor="name">Nome</label>
+              <label className="block text-white/80 mb-2" htmlFor="name">Nome</label>
               <input
                 type="text"
                 id="name"
                 name="name"
-                className="w-1/2 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 placeholder="Seu nome"
               />
             </div>
             <div>
-              <label className="block text-white/80" htmlFor="email">Email</label>
+              <label className="block text-white/80 mb-2" htmlFor="email">Email</label>
               <input
                 type="email"
                 id="email"
                 name="email"
-                className="w-1/2 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 placeholder="Seu email"
               />
             </div>
             <div>
-              <label className="block text-white/80" htmlFor="message">Mensagem</label>
+              <label className="block text-white/80 mb-2" htmlFor="message">Mensagem</label>
               <textarea
                 id="message"
                 name="message"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 placeholder="Sua mensagem"
                 rows="6"
               ></textarea>
             </div>
-            {/* Botón de envío alineado a la derecha */}
+            {/* Botón de envio */}
             <div className="text-right">
               <button
                 type="submit"
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
+                className="px-6 py-3 bg-green-400 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-green-300 transition duration-300"
               >
                 Enviar mensagem
               </button>
@@ -54,8 +98,11 @@ export default function Contact() {
         </section>
 
         {/* Columna de Google Maps */}
-        <section className="p-6 bg-gray-800 rounded-lg shadow-md">
-          <h3 className="text-2xl font-semibold text-white mb-6">Nossa localização</h3>
+        <section
+          ref={mapRef}
+          className="bg-[#1F0037] bg-opacity-60 p-8 rounded-2xl shadow-xl"
+        >
+          <h3 className="text-2xl font-semibold mb-6">Nossa localização</h3>
           <div className="w-full h-64 rounded-lg overflow-hidden shadow-md">
             <iframe
               title="Google Maps"
