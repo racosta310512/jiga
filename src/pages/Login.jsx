@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Asegúrate de ajustar la ruta correctamente
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth(); // Accedemos al método login del contexto
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,9 +20,10 @@ export default function Login() {
       });
 
       const { token } = res.data;
-      localStorage.setItem('token', token);
+      login(token); // Usamos la función login del contexto para actualizar el estado global
+
       alert('Login realizado com sucesso!');
-      navigate('/'); // Redirige al inicio o a un dashboard
+      navigate('/'); // Redirige al dashboard o a la página principal
     } catch (err) {
       setError(err.response?.data?.message || 'Erro no login');
     }

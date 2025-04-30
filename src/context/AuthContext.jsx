@@ -15,14 +15,22 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  // Función de login
+  const login = (token) => {
+    localStorage.setItem('token', token);
+    const decoded = jwtDecode(token);
+    setUser({ id: decoded.id });
+  };
+
+  // Función de logout
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    window.location.href = '/login';
+    window.location.href = '/login'; // Redirige al login
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
