@@ -6,12 +6,11 @@ import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth(); // <-- Asegúrate de tener `user`
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    logout(navigate); // Pasamos navigate al logout
   };
 
   useEffect(() => {

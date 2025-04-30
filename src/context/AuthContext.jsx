@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  // Recupera usuario del localStorage al iniciar
+  // Al iniciar, carga datos del localStorage si existen
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
@@ -16,26 +16,28 @@ export function AuthProvider({ children }) {
       try {
         const decoded = jwtDecode(token);
         const parsedUser = JSON.parse(userData);
-        setUser({ ...parsedUser, id: decoded.id }); // Combina ambos datos
+        setUser({ ...parsedUser, id: decoded.userId }); // Corrige el nombre del campo
       } catch (err) {
-        console.error("Token inválido ou dados corrompidos:", err);
+        console.error("Token inválido o datos corruptos:", err);
         logout(); // Borra todo si hay error
       }
     }
   }, []);
 
+  // Guardar usuario al hacer login
   const login = (token, userData) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     const decoded = jwtDecode(token);
-    setUser({ ...userData, id: decoded.id });
+    setUser({ ...userData, id: decoded.userId });
   };
 
-  const logout = () => {
+  // Cerrar sesión (ahora espera navigate como argumento)
+  const logout = (navigate) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    window.location.href = '/login';
+    if (navigate) navigate('/login'); // Redirige usando React Router
   };
 
   const isAuthenticated = !!user;
