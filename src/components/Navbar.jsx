@@ -68,7 +68,7 @@ const Navbar = () => {
               <span className="text-green-400 font-semibold">Olá, {user?.name || "Usuário"}</span>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 text-red-400 hover:text-red-600 transition duration-200"
+                className="flex items-center text-right space-x-1 text-red-400 hover:text-red-600 transition duration-200"
               >
                 <LogOut size={18} />
                 <span>Sair</span>
