@@ -1,22 +1,28 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { username, password });
+      const res = await axios.post('https://jiga-backend.vercel.app/api/login', {
+        email,
+        password,
+      });
+
       const { token } = res.data;
       localStorage.setItem('token', token);
       alert('Login realizado com sucesso!');
-      // Redirecionar ou atualizar estado global aqui
+      navigate('/'); // Redirige al inicio o a un dashboard
     } catch (err) {
-      setError(err.response?.data?.error || 'Erro no login');
+      setError(err.response?.data?.message || 'Erro no login');
     }
   };
 
@@ -26,10 +32,10 @@ export default function Login() {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         {error && <div className="text-red-600 mb-4">{error}</div>}
         <input
-          type="text"
-          placeholder="Nome de usuário"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full p-3 mb-4 border rounded"
           required
         />
