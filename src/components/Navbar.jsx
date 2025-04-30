@@ -10,7 +10,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(navigate); // Pasamos navigate al logout
+    logout(navigate); // redirige usando navigate
+    setIsMenuOpen(false); // cerrar el menú móvil al cerrar sesión
   };
 
   useEffect(() => {
@@ -34,12 +35,16 @@ const Navbar = () => {
           aria-label="Toggle menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
 
-        {/* Versión de escritorio */}
+        {/* Menú escritorio */}
         <nav className="hidden lg:flex flex-1 justify-end space-x-6 text-white/90 text-sm font-medium items-center">
           <Link to="/" className="hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
           <Link to="/about" className="hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
@@ -76,23 +81,23 @@ const Navbar = () => {
       {/* Menú móvil */}
       {isMenuOpen && (
         <nav className="lg:hidden mt-4 space-y-2 text-white/90 text-sm font-medium text-right">
-          <Link to="/" className="block hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
-          <Link to="/about" className="block hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
-          <Link to="/services" className="block hover:text-green-400 hover:underline transition duration-200">SERVIÇOS</Link>
-          <Link to="/contact" className="block hover:text-green-400 hover:underline transition duration-200">CONTATO</Link>
-          <Link to="/faq" className="block hover:text-green-400 hover:underline transition duration-200">PREGUNTAS</Link>
+          <Link to="/" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>INÍCIO</Link>
+          <Link to="/about" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>QUEM SOMOS</Link>
+          <Link to="/services" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>SERVIÇOS</Link>
+          <Link to="/contact" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>CONTATO</Link>
+          <Link to="/faq" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>PREGUNTAS</Link>
 
           {!isAuthenticated ? (
             <>
-              <Link to="/login" className="block hover:text-green-400 transition duration-200">🔑 Entrar</Link>
-              <Link to="/register" className="block hover:text-green-400 transition duration-200">📝 Criar conta</Link>
+              <Link to="/login" className="block hover:text-green-400 transition duration-200" onClick={() => setIsMenuOpen(false)}>🔑 Entrar</Link>
+              <Link to="/register" className="block hover:text-green-400 transition duration-200" onClick={() => setIsMenuOpen(false)}>📝 Criar conta</Link>
             </>
           ) : (
             <>
               <div className="text-green-400 font-semibold">👤 {user?.name || "Usuário"}</div>
               <button
                 onClick={handleLogout}
-                className="block text-red-400 hover:text-red-600 transition duration-200"
+                className="w-full text-right text-red-400 hover:text-red-600 transition duration-200"
               >
                 🚪 Sair
               </button>
