@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogIn, UserPlus, LogOut } from "lucide-react";
 import Logo from "../assets/logo1.png";
-import { useAuth } from "../hooks/useAuth"; // importa el hook
+import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth(); // <-- Asegúrate de tener `user`
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -60,13 +60,16 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-1 text-red-400 hover:text-red-600 transition duration-200"
-            >
-              <LogOut size={18} />
-              <span>Sair</span>
-            </button>
+            <>
+              <span className="text-green-400 font-semibold">Olá, {user?.name || "Usuário"}</span>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-1 text-red-400 hover:text-red-600 transition duration-200"
+              >
+                <LogOut size={18} />
+                <span>Sair</span>
+              </button>
+            </>
           )}
         </nav>
       </div>
@@ -86,12 +89,15 @@ const Navbar = () => {
               <Link to="/register" className="block hover:text-green-400 transition duration-200">📝 Criar conta</Link>
             </>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="block text-red-400 hover:text-red-600 transition duration-200"
-            >
-              🚪 Sair
-            </button>
+            <>
+              <div className="text-green-400 font-semibold">👤 {user?.name || "Usuário"}</div>
+              <button
+                onClick={handleLogout}
+                className="block text-red-400 hover:text-red-600 transition duration-200"
+              >
+                🚪 Sair
+              </button>
+            </>
           )}
         </nav>
       )}

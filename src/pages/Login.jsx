@@ -20,7 +20,7 @@ export default function Login() {
       });
 
       const { token } = res.data;
-      login(token); // Usamos la función login del contexto para actualizar el estado global
+      login(token, { name: "Rafael", email: "rafael@email.com" }); // Usamos la función login del contexto para actualizar el estado global
 
       alert('Login realizado com sucesso!');
       navigate('/'); // Redirige al dashboard o a la página principal
