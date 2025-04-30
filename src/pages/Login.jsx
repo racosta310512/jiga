@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post('https://jiga-backend.vercel.app/api/login', {
+      const res = await axios.post('https://jiga-backend.vercel.app/api/auth/login', {
         email,
         password,
       });

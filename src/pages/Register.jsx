@@ -13,7 +13,7 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await axios.post('https://jiga-backend.vercel.app/api/register', {
+      await axios.post('https://jiga-backend.vercel.app/api/auth/register', {
         name,
         email,
         password,
