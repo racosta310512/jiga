@@ -19,13 +19,13 @@ export default function Login() {
         password,
       });
 
-      const { token } = res.data;
-      login(token, { name: "Rafael", email: "rafael@email.com" }); // Usamos la función login del contexto para actualizar el estado global
+      const { token, user } = res.data; // Obtén el token y el objeto user desde la respuesta
+      login(token, user); // Usamos la función login del contexto para actualizar el estado global
 
-      alert('Login realizado com sucesso!');
+      alert('Login realizado con éxito!');
       navigate('/'); // Redirige al dashboard o a la página principal
     } catch (err) {
-      setError(err.response?.data?.message || 'Erro no login');
+      setError(err.response?.data?.message || 'Error en el login');
     }
   };
 
