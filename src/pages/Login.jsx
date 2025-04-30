@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth'; // Asegúrate de ajustar la ruta correctamente
+import gsap from 'gsap';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -29,28 +30,46 @@ export default function Login() {
     }
   };
 
+  // Animaciones con GSAP
+  useEffect(() => {
+    gsap.fromTo(
+      '.login-form',
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+    );
+  }, []);
+
   return (
     <div className="flex justify-center items-center min-h-[70vh]">
-      <form onSubmit={handleLogin} className="bg-white text-black p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+      <form
+        onSubmit={handleLogin}
+        className="login-form bg-[#1F0037] bg-opacity-60 p-8 rounded-2xl shadow-xl w-full max-w-md"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
         {error && <div className="text-red-600 mb-4">{error}</div>}
+        
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 border rounded"
+          className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
           required
         />
+        
         <input
           type="password"
           placeholder="Senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-6 border rounded"
+          className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-6"
           required
         />
-        <button type="submit" className="w-full bg-purple-700 text-white py-3 rounded hover:bg-purple-800 transition">
+        
+        <button
+          type="submit"
+          className="w-full bg-green-400 text-gray-900 py-3 rounded-lg shadow-md hover:bg-green-300 transition duration-300"
+        >
           Entrar
         </button>
       </form>
