@@ -10,8 +10,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(navigate); // redirige usando navigate
-    setIsMenuOpen(false); // cerrar el menú móvil al cerrar sesión
+    logout(navigate);
+    setIsMenuOpen(false);
   };
 
   useEffect(() => {
@@ -35,16 +35,12 @@ const Navbar = () => {
           aria-label="Toggle menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
 
-        {/* Menú escritorio */}
+        {/* Versión escritorio */}
         <nav className="hidden lg:flex flex-1 justify-end space-x-6 text-white/90 text-sm font-medium items-center">
           <Link to="/" className="hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
           <Link to="/about" className="hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
@@ -78,19 +74,23 @@ const Navbar = () => {
         </nav>
       </div>
 
-      {/* Menú móvil */}
-      {isMenuOpen && (
-        <nav className="lg:hidden mt-4 space-y-2 text-white/90 text-sm font-medium text-right">
-          <Link to="/" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>INÍCIO</Link>
-          <Link to="/about" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>QUEM SOMOS</Link>
-          <Link to="/services" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>SERVIÇOS</Link>
-          <Link to="/contact" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>CONTATO</Link>
-          <Link to="/faq" className="block hover:text-green-400 hover:underline transition duration-200" onClick={() => setIsMenuOpen(false)}>PREGUNTAS</Link>
+      {/* Menú móvil con slide & fade */}
+      <div
+        className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+          isMenuOpen ? "max-h-96 opacity-100 translate-y-0 mt-4" : "max-h-0 opacity-0 -translate-y-4"
+        }`}
+      >
+        <nav className="space-y-2 text-white/90 text-sm font-medium text-right transform transition-transform duration-300">
+          <Link to="/" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
+          <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
+          <Link to="/services" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">SERVIÇOS</Link>
+          <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">CONTATO</Link>
+          <Link to="/faq" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">PREGUNTAS</Link>
 
           {!isAuthenticated ? (
             <>
-              <Link to="/login" className="block hover:text-green-400 transition duration-200" onClick={() => setIsMenuOpen(false)}>🔑 Entrar</Link>
-              <Link to="/register" className="block hover:text-green-400 transition duration-200" onClick={() => setIsMenuOpen(false)}>📝 Criar conta</Link>
+              <Link to="/login" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 transition duration-200">🔑 Entrar</Link>
+              <Link to="/register" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 transition duration-200">📝 Criar conta</Link>
             </>
           ) : (
             <>
@@ -104,7 +104,7 @@ const Navbar = () => {
             </>
           )}
         </nav>
-      )}
+      </div>
     </header>
   );
 };
