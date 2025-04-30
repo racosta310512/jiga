@@ -40,7 +40,7 @@ const Navbar = () => {
           </svg>
         </button>
 
-        {/* Versión escritorio */}
+        {/* Navegación escritorio */}
         <nav className="hidden lg:flex flex-1 justify-end space-x-6 text-white/90 text-sm font-medium items-center">
           <Link to="/" className="hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
           <Link to="/about" className="hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
@@ -74,13 +74,13 @@ const Navbar = () => {
         </nav>
       </div>
 
-      {/* Menú móvil con slide & fade */}
+      {/* Menú móvil con animación lenta y suave */}
       <div
-        className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`lg:hidden transition-all duration-700 ease-in-out overflow-hidden ${
           isMenuOpen ? "max-h-96 opacity-100 translate-y-0 mt-4" : "max-h-0 opacity-0 -translate-y-4"
         }`}
       >
-        <nav className="space-y-2 text-white/90 text-sm font-medium text-right transform transition-transform duration-300">
+        <nav className="space-y-2 text-white/90 text-sm font-medium text-right transform transition-transform duration-700 ease-in-out">
           <Link to="/" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
           <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
           <Link to="/services" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">SERVIÇOS</Link>
