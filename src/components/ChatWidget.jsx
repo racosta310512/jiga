@@ -1,61 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Picker from 'emoji-picker-react';
-import { sendMessageToHuggingFace } from '../services/huggingface';
-import { setItem, getItem, removeItem } from '../utils/storage'; // Importa las funciones de storage.js
+import { sendMessageToOpenAI } from '../services/openai';
 
 const ChatWidget = () => {
+  const defaultMessage = [
+    {
+      role: 'assistant',
+      content: '👋 ¡Hola! Soy Jiga, tu asistente virtual. ¿En qué puedo ayudarte hoy?'
+    }
+  ];
+
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState(() => {
-    // Carga los mensajes desde localStorage al inicio
-    const storedMessages = getItem('chatMessages');
-    return storedMessages || [{ role: 'assistant', content: '👋 ¡Hola! Soy Jiga, tu asistente virtual. ¿En qué puedo ayudarte hoy?' }];
-  });
+  const [messages, setMessages] = useState(defaultMessage);
   const [isTyping, setIsTyping] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  // Handle emoji click
+  useEffect(() => {
+    sessionStorage.setItem('chatMessages', JSON.stringify(defaultMessage));
+  }, []);
+
   const handleEmojiClick = (emoji) => {
     setInput((prevInput) => prevInput + emoji.emoji);
     setShowEmojiPicker(false);
   };
 
-  // Handle message submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { role: 'user', content: input }];
+    const userMessage = { role: 'user', content: input };
+    const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
 
-    // Guardar los mensajes en el localStorage
-    setItem('chatMessages', newMessages);
-
     try {
       setIsTyping(true);
-      const response = await sendMessageToHuggingFace(input);
-      const updatedMessages = [...newMessages, { role: 'assistant', content: response }];
+      const response = await sendMessageToOpenAI(input);
+      const botMessage = { role: 'assistant', content: response };
+      const updatedMessages = [...newMessages, botMessage];
       setMessages(updatedMessages);
-
-      // Guardar los mensajes actualizados en el localStorage
-      setItem('chatMessages', updatedMessages);
-
-      setIsTyping(false);
+      sessionStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
     } catch (error) {
-      const errorMessages = [...newMessages, { role: 'assistant', content: '⚠️ Ocurrió un error al responder.' }];
-      setMessages(errorMessages);
-      setItem('chatMessages', errorMessages); // Guardar los mensajes con error en localStorage
+      setMessages([...newMessages, { role: 'assistant', content: '⚠️ Ocurrió un error al responder.' }]);
+    } finally {
       setIsTyping(false);
     }
-  };
-
-  // Handle chat clear
-  const handleClearChat = () => {
-    const initialMessages = [{ role: 'assistant', content: '👋 ¡Hola! Soy Jiga, tu asistente virtual. ¿En qué puedo ayudarte hoy?' }];
-    setMessages(initialMessages);
-    setItem('chatMessages', initialMessages); // Guardar el estado inicial de los mensajes
   };
 
   return (
@@ -116,7 +107,10 @@ const ChatWidget = () => {
                     style={{
                       padding: '10px 15px',
                       borderRadius: '20px',
-                      background: msg.role === 'user' ? 'linear-gradient(90deg, #00c6ff, #0072ff)' : 'rgba(255,255,255,0.2)',
+                      background:
+                        msg.role === 'user'
+                          ? 'linear-gradient(90deg, #00c6ff, #0072ff)'
+                          : 'rgba(255,255,255,0.2)',
                       color: '#fff',
                       maxWidth: '75%',
                       wordWrap: 'break-word',
@@ -146,35 +140,6 @@ const ChatWidget = () => {
                   </span>
                 </div>
               )}
-            </div>
-
-            <div
-              className="clear-button-wrapper"
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                opacity: 0,
-                transform: 'translateY(-10px)',
-                transition: 'opacity 0.3s, transform 0.3s',
-              }}
-            >
-              <button
-                onClick={handleClearChat}
-                style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  padding: '4px 10px',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  backdropFilter: 'blur(4px)',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                }}
-              >
-                🧹 Limpiar
-              </button>
             </div>
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', padding: '10px', backgroundColor: 'rgba(0,0,0,0.3)' }}>

@@ -1,6 +1,6 @@
 export const sendMessageToHuggingFace = async (userMessage) => {
-  const API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
-  const API_TOKEN = process.env.REACT_APP_HUGGINGFACE_API_TOKEN; // Usando el token desde las variables de entorno
+  const API_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta";
+  const API_TOKEN = process.env.REACT_APP_HUGGINGFACE_API_TOKEN;
 
   const headers = {
     Authorization: `Bearer ${API_TOKEN}`,
@@ -8,33 +8,31 @@ export const sendMessageToHuggingFace = async (userMessage) => {
   };
 
   const body = {
-    inputs: `Usuario: ${userMessage}\nAsistente:`,
+    inputs: `<|user|>\n${userMessage}\n<|assistant|>`,
     parameters: {
-      max_new_tokens: 100,
+      max_new_tokens: 200,
       temperature: 0.7,
-      return_full_text: false,
-    },
+      return_full_text: false
+    }
   };
 
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
 
-    if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`API Error ${res.status}: ${errorText}`);
+      throw new Error(errorText);
+    }
 
     const data = await res.json();
-
-    // Verificar si la respuesta contiene la estructura esperada
-    if (data[0]?.generated_text) {
-      return data[0].generated_text.replace(/^Usuario:.*?\nAsistente:/s, '').trim() || "⚠️ Sin respuesta.";
-    } else {
-      throw new Error("Respuesta inesperada de la API");
-    }
+    return data[0]?.generated_text?.trim() || "⚠️ Sin respuesta.";
   } catch (err) {
     console.error("HuggingFace Error:", err);
-    throw new Error("Hubo un problema al conectar con el servidor. Intenta más tarde.");
+    throw err;
   }
 };

@@ -1,25 +1,12 @@
-import axios from 'axios';
+export async function sendMessageToOpenAI(message) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message }),
+  });
 
-const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  if (!res.ok) throw new Error('Error al enviar mensaje al backend');
 
-export const sendMessageToOpenAI = async (message) => {
-  try {
-    const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: message }],
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-      }
-    );
-    return response.data.choices[0].message.content;
-  } catch (error) {
-    console.error('Error al llamar a OpenAI:', error);
-    throw error;
-  }
-};
+  const data = await res.json();
+  return data.response;
+}
