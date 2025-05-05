@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register"; 
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import ScrollToTop from './components/ScrollToTop';
 //import Chat from "./components/ChatWidget"
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-[#3F00FF] to-[#069494] text-white font-sans">
         <Navbar />
         <main>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

@@ -1,9 +1,20 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import backgroundImage from '../assets/3381454.jpg';
-import TransfDigital from "../assets/trasnf_digital.jpg";
+import TransfDigital from '../assets/trasnf_digital.jpg';
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const handleSaibaMais = () => {
+    navigate('/services');
+  };
+
+  const handleConhecaHistoria = () => {
+    navigate('/about');
+  };
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.fade-in', {
@@ -19,21 +30,21 @@ export default function Home() {
   }, []);
 
   const solutions = [
-    { title: "Gestão de TI", description: "Soluções robustas em infraestrutura, AMS, Service Desk & Field Services, SAP e Outsourcing de TI." },
-    { title: "Big Data & Analytics", description: "Soluções completas em BI, Data Analytics, Machine learning e Big Data para insights estratégicos." },
-    { title: "Chatbot & IA", description: "Solução completa para atendimento inteligente, melhorando a experiência do cliente." }
+    { title: 'Gestão de TI', description: 'Soluções robustas em infraestrutura, AMS, Service Desk & Field Services, SAP e Outsourcing de TI.' },
+    { title: 'Big Data & Analytics', description: 'Soluções completas em BI, Data Analytics, Machine learning e Big Data para insights estratégicos.' },
+    { title: 'Chatbot & IA', description: 'Solução completa para atendimento inteligente, melhorando a experiência do cliente.' },
   ];
 
   const cases = [
-    { title: "Case NIVEA", description: "A NIVEA acelerou sua jornada digital com apoio da TOPMIND, implementando soluções inovadoras." },
-    { title: "Case Mosaic Fertilizantes", description: "Automatização da gestão de escritórios com apoio da TOPMIND, otimizando processos internos." },
-    { title: "Case Via", description: "Parceria para a implementação de tecnologia em lojas da Via, melhorando a eficiência operacional." }
+    { title: 'Case NIVEA', description: 'A NIVEA acelerou sua jornada digital com apoio da TOPMIND, implementando soluções inovadoras.' },
+    { title: 'Case Mosaic Fertilizantes', description: 'Automatização da gestão de escritórios com apoio da TOPMIND, otimizando processos internos.' },
+    { title: 'Case Via', description: 'Parceria para a implementação de tecnologia em lojas da Via, melhorando a eficiência operacional.' },
   ];
 
   const ctaItems = [
-    { title: "Soluções sob medida", description: "Tecnologia adaptada ao seu negócio, com escalabilidade garantida." },
-    { title: "Equipe especializada", description: "Profissionais com expertise em inovação, IA, cloud e big data." },
-    { title: "Resultados mensuráveis", description: "Automação e inteligência que geram produtividade real." }
+    { title: 'Soluções sob medida', description: 'Tecnologia adaptada ao seu negócio, com escalabilidade garantida.' },
+    { title: 'Equipe especializada', description: 'Profissionais com expertise em inovação, IA, cloud e big data.' },
+    { title: 'Resultados mensuráveis', description: 'Automação e inteligência que geram produtividade real.' },
   ];
 
   return (
@@ -49,7 +60,10 @@ export default function Home() {
             <p className="text-white/80 mb-6">
               Combinando criatividade e expertise técnica, desenvolvemos ferramentas digitais que otimizam processos e elevam a competitividade no mercado.
             </p>
-            <button className="bg-cyan-400 text-black font-semibold px-6 py-3 rounded-full shadow hover:bg-cyan-300 transition">
+            <button
+              onClick={handleSaibaMais}
+              className="bg-cyan-400 text-black font-semibold px-6 py-3 rounded-full shadow hover:bg-cyan-300 transition"
+            >
               SAIBA MAIS
             </button>
           </div>
@@ -86,7 +100,6 @@ export default function Home() {
       {/* CTA Section */}
       <section className="fade-in py-20 px-6 md:px-12 bg-gradient-to-r from-green-700 to-blue-900 text-white">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Lado esquerdo */}
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Transforme sua empresa com tecnologia
@@ -111,12 +124,14 @@ export default function Home() {
               ))}
             </div>
 
-            <button className="mt-8 bg-cyan-400 text-black font-semibold px-6 py-3 rounded-full shadow hover:bg-cyan-300 transition">
+            <button
+              onClick={handleConhecaHistoria}
+              className="mt-8 bg-cyan-400 text-black font-semibold px-6 py-3 rounded-full shadow hover:bg-cyan-300 transition"
+            >
               Conheça nossa história
             </button>
           </div>
 
-          {/* Lado direito */}
           <div className="flex justify-center">
             <img
               src={TransfDigital}
