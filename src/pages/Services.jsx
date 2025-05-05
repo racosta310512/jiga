@@ -1,86 +1,36 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaCogs, FaServer, FaMobileAlt, FaChartLine, FaLock, FaTools } from "react-icons/fa";
+import QuoteForm from "../components/QuoteForm"; // Asegúrate de que la ruta sea correcta
 
 gsap.registerPlugin(ScrollTrigger);
 
 const servicesList = [
-  {
-    icon: <FaCogs className="text-green-400 text-4xl mb-4" />,
-    title: "Automação de Processos",
-    description: "Simplifique operações repetitivas e aumente a produtividade da sua empresa com nossas soluções de automação.",
-  },
-  {
-    icon: <FaServer className="text-green-400 text-4xl mb-4" />,
-    title: "Infraestrutura de TI",
-    description: "Projetamos e implementamos infraestrutura robusta e segura para suportar o crescimento do seu negócio.",
-  },
-  {
-    icon: <FaMobileAlt className="text-green-400 text-4xl mb-4" />,
-    title: "Aplicativos Mobile",
-    description: "Desenvolvimento de apps nativos e híbridos para impulsionar a presença da sua marca no mundo mobile.",
-  },
-  {
-    icon: <FaChartLine className="text-green-400 text-4xl mb-4" />,
-    title: "Análise de Dados",
-    description: "Transforme dados em insights valiosos para tomadas de decisão mais estratégicas e inteligentes.",
-  },
-  {
-    icon: <FaLock className="text-green-400 text-4xl mb-4" />,
-    title: "Segurança Digital",
-    description: "Proteção completa para dados e sistemas contra ameaças cibernéticas e vulnerabilidades.",
-  },
-  {
-    icon: <FaTools className="text-green-400 text-4xl mb-4" />,
-    title: "Suporte Técnico",
-    description: "Equipe especializada para manter sua operação de TI funcionando com alta disponibilidade.",
-  },
+  { icon: <FaCogs className="text-green-400 text-4xl mb-4" />, title: "Automação de Processos", description: "Simplifique operações repetitivas e aumente a produtividade da sua empresa com nossas soluções de automação." },
+  { icon: <FaServer className="text-green-400 text-4xl mb-4" />, title: "Infraestrutura de TI", description: "Projetamos e implementamos infraestrutura robusta e segura para suportar o crescimento do seu negócio." },
+  { icon: <FaMobileAlt className="text-green-400 text-4xl mb-4" />, title: "Aplicativos Mobile", description: "Desenvolvimento de apps nativos e híbridos para impulsionar a presença da sua marca no mundo mobile." },
+  { icon: <FaChartLine className="text-green-400 text-4xl mb-4" />, title: "Análise de Dados", description: "Transforme dados em insights valiosos para tomadas de decisão mais estratégicas e inteligentes." },
+  { icon: <FaLock className="text-green-400 text-4xl mb-4" />, title: "Segurança Digital", description: "Proteção completa para dados e sistemas contra ameaças cibernéticas e vulnerabilidades." },
+  { icon: <FaTools className="text-green-400 text-4xl mb-4" />, title: "Suporte Técnico", description: "Equipe especializada para manter sua operação de TI funcionando com alta disponibilidade." },
 ];
 
 export default function Services() {
   const sectionRef = useRef();
   const gridRef = useRef();
   const ctaRef = useRef();
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    gsap.fromTo(
-      sectionRef.current,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
-    );
-
-    gsap.fromTo(
-      gridRef.current,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: "top 80%",
-          toggleActions: "play reverse play reverse",
-        },
-      }
-    );
-
-    gsap.fromTo(
-      ctaRef.current,
-      { opacity: 0, scale: 0.95 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: ctaRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      }
-    );
+    gsap.fromTo(sectionRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+    gsap.fromTo(gridRef.current, { opacity: 0, y: 50 }, {
+      opacity: 1, y: 0, duration: 1.2, ease: "power3.out",
+      scrollTrigger: { trigger: gridRef.current, start: "top 80%", toggleActions: "play reverse play reverse" },
+    });
+    gsap.fromTo(ctaRef.current, { opacity: 0, scale: 0.95 }, {
+      opacity: 1, scale: 1, duration: 1, ease: "power3.out",
+      scrollTrigger: { trigger: ctaRef.current, start: "top 85%", toggleActions: "play none none none" },
+    });
   }, []);
 
   return (
@@ -94,10 +44,7 @@ export default function Services() {
 
       <div ref={gridRef} className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-12">
         {servicesList.map((service, index) => (
-          <div
-            key={index}
-            className="bg-[#1F0037] bg-opacity-60 p-8 rounded-2xl shadow-xl hover:scale-105 transform transition-transform duration-300 flex flex-col items-center text-center"
-          >
+          <div key={index} className="bg-[#1F0037] bg-opacity-60 p-8 rounded-2xl shadow-xl hover:scale-105 transform transition-transform duration-300 flex flex-col items-center text-center">
             {service.icon}
             <h3 className="text-2xl font-semibold mb-3">{service.title}</h3>
             <p className="text-white/80">{service.description}</p>
@@ -112,11 +59,14 @@ export default function Services() {
           Fale agora com nossa equipe e descubra como podemos acelerar a sua transformação digital!
         </p>
         <button
+          onClick={() => setShowForm(true)}
           className="bg-green-400 hover:bg-green-300 text-[#0f0c29] font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
         >
           Solicitar Orçamento
         </button>
       </div>
+
+      {showForm && <QuoteForm onClose={() => setShowForm(false)} />}
     </div>
   );
 }
