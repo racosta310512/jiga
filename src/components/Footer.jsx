@@ -8,15 +8,15 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-4">Navegação</h3>
           <ul className="space-y-2 text-sm text-gray-300">
-            <li><a href="#" className="hover:text-white">Home</a></li>
-            <li><a href="#" className="hover:text-white">Sobre</a></li>
-            <li><a href="#" className="hover:text-white">Soluções</a></li>
-            <li><a href="#" className="hover:text-white">Cases</a></li>
-            <li><a href="#" className="hover:text-white">Blog</a></li>
+            <li><a href="/" className="hover:text-white">Home</a></li>
+            <li><a href="/about" className="hover:text-white">Sobre</a></li>
+            <li><a href="/services" className="hover:text-white">Soluções</a></li>
+            <li><a href="/contact" className="hover:text-white">Contatos</a></li>
+            <li><a href="/faq" className="hover:text-white">Preguntas</a></li>
           </ul>
         </div>
 
-        {/* Sección de soluciones */}
+        {/* Sección de soluciones 
         <div>
           <h3 className="text-lg font-semibold mb-4">Soluções</h3>
           <ul className="space-y-2 text-sm text-gray-300">
@@ -27,6 +27,7 @@ export default function Footer() {
             <li><a href="#" className="hover:text-white">Transformação Digital</a></li>
           </ul>
         </div>
+        */}
 
         {/* Sección de contacto */}
         <div>

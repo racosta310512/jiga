@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register"; 
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import Chat from "./components/ChatWidget"
+//import Chat from "./components/ChatWidget"
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
             <Route path="/register" element={<Register />} />
           </Routes>
         </main>
-        <Chat />
+        
         <Footer />
       </div>
     </Router>
