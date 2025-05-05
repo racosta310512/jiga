@@ -105,7 +105,7 @@ export default function Home() {
               Transforme sua empresa com tecnologia
             </h2>
             <p className="mb-6 text-white/90">
-              Com mais de 21 anos de experiência, a TOPMIND é referência em soluções inovadoras. Nossa missão é impulsionar a transformação digital das empresas, otimizando processos e gerando resultados estratégicos.
+              Com mais de 21 anos de experiência, a JIGA SOLUÇÕES é referência em soluções inovadoras. Nossa missão é impulsionar a transformação digital das empresas, otimizando processos e gerando resultados estratégicos.
             </p>
 
             <div className="space-y-4">
