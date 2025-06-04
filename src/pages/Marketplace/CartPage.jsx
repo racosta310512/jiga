@@ -10,38 +10,39 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
-    if (!isAuthenticated) {
-      return navigate('/login');
-    }
+  if (!isAuthenticated) {
+    return navigate('/login');
+  }
 
-    try {
-      const token = localStorage.getItem('token');
+  try {
+    const token = localStorage.getItem('token');
 
-      const response = await axios.post(
-        'https://jiga-store.vercel.app/orders',
-        {
-          userId: user.id,
-          items: cart,
+    const response = await axios.post(
+      'https://jiga-store.vercel.app/orders',
+      {
+        userId: user.id,
+        items: cart,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 201 || response.status === 200) {
-        alert('Pedido realizado com sucesso!');
-        clearCart(); // Limpia carrito local
-        navigate('/marketplace'); // Redirecciona si deseas
-      } else {
-        alert('Ocorreu um erro ao finalizar o pedido.');
       }
-    } catch (error) {
-      console.error('Erro no checkout:', error);
-      alert('Erro ao finalizar o pedido.');
+    );
+
+    if (response.status === 201 || response.status === 200) {
+      alert('Pedido realizado com sucesso!');
+      clearCart(); // Limpia carrito local
+      navigate('/marketplace');
+    } else {
+      alert('Ocorreu um erro ao finalizar o pedido.');
     }
-  };
+  } catch (error) {
+    console.error('Erro no checkout:', error);
+    alert('Erro ao finalizar o pedido.');
+  }
+};
+
 
   if (cart.length === 0) {
     return (

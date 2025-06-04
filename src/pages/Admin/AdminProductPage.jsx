@@ -1,18 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const AdminProductPage = () => {
-  const [products, setProducts] = useState([]); // En el futuro, useEffect + fetch
+  const [products, setProducts] = useState([]);
   const [form, setForm] = useState({ name: "", price: "", image: "" });
+
+  const fetchProducts = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
+    setProducts(res.data);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!form.name || !form.price) return;
-    setProducts([...products, { ...form, _id: Date.now().toString() }]);
+    await axios.post(`${import.meta.env.VITE_API_URL}/products`, form);
     setForm({ name: "", price: "", image: "" });
+    fetchProducts();
   };
 
-  const handleDelete = (id) => setProducts(products.filter((p) => p._id !== id));
+  const handleDelete = async (id) => {
+    await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`);
+    fetchProducts();
+  };
 
   return (
     <div className="p-6 text-white max-w-3xl mx-auto">
@@ -63,3 +77,4 @@ const AdminProductPage = () => {
 };
 
 export default AdminProductPage;
+
