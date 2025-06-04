@@ -14,7 +14,7 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await axios.post('https://jiga-backend.vercel.app/api/auth/register', {
+      await axios.post('https://jiga-store.vercel.app/auth/register', {
         name,
         email,
         password,

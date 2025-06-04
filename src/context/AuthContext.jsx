@@ -7,7 +7,6 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  // Al iniciar, carga datos del localStorage si existen
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
@@ -16,28 +15,34 @@ export function AuthProvider({ children }) {
       try {
         const decoded = jwtDecode(token);
         const parsedUser = JSON.parse(userData);
-        setUser({ ...parsedUser, id: decoded.userId }); // Corrige el nombre del campo
+        const userId = decoded.userId || decoded.id || decoded.sub; // Flexibilidad en el campo
+        if (!userId) throw new Error("No se pudo extraer userId del token.");
+        setUser({ ...parsedUser, id: userId });
       } catch (err) {
         console.error("Token inválido o datos corruptos:", err);
-        logout(); // Borra todo si hay error
+        logout(); // Limpia si hay error
       }
     }
   }, []);
 
-  // Guardar usuario al hacer login
   const login = (token, userData) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    const decoded = jwtDecode(token);
-    setUser({ ...userData, id: decoded.userId });
+    try {
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId || decoded.id || decoded.sub;
+      if (!userId) throw new Error("Token inválido");
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser({ ...userData, id: userId });
+    } catch (err) {
+      console.error("Login fallido:", err);
+    }
   };
 
-  // Cerrar sesión (ahora espera navigate como argumento)
   const logout = (navigate) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    if (navigate) navigate('/login'); // Redirige usando React Router
+    if (navigate) navigate('/login');
   };
 
   const isAuthenticated = !!user;

@@ -1,12 +1,15 @@
+// src/components/Navbar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogIn, UserPlus, LogOut } from "lucide-react";
+import { LogIn, UserPlus, LogOut, ShoppingCart } from "lucide-react";
 import Logo from "../assets/logo1.png";
 import { useAuth } from "../hooks/useAuth";
+import { useCart } from '../hooks/useCart'; 
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const { cart } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -24,10 +27,17 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const cartItemCount = Array.isArray(cart)
+  ? cart.reduce((total, item) => total + item.quantity, 0)
+  : 0;
+
+
   return (
-    <header className="bg-[#1F0037] bg-opacity-50 px-6 py-4">
+    <header className="bg-[#1F0037] bg-opacity-50 px-6 py-4 shadow-lg z-50 relative">
       <div className="flex justify-between items-center">
-        <img src={Logo} alt="Logotipo" className="w-16 h-6" />
+        <Link to="/">
+          <img src={Logo} alt="Logotipo" className="w-12 h-6" />
+        </Link>
 
         <button
           className="lg:hidden text-white"
@@ -48,6 +58,22 @@ const Navbar = () => {
           <Link to="/contact" className="hover:text-green-400 hover:underline transition duration-200">CONTATO</Link>
           <Link to="/faq" className="hover:text-green-400 hover:underline transition duration-200">PREGUNTAS</Link>
 
+          <Link
+            to="/marketplace"
+            className="flex items-center space-x-1 text-white hover:text-green-400 transition duration-200"
+          >
+            <ShoppingCart size={18} />
+            <span>MARKETPLACE</span>
+          </Link>
+
+          <Link
+            to="/cart"
+            className="flex items-center space-x-1 text-white hover:text-green-400 transition duration-200"
+          >
+            <ShoppingCart size={18} />
+            <span>Carrito ({cartItemCount})</span>
+          </Link>
+
           {!isAuthenticated ? (
             <>
               <Link to="/login" className="flex items-center space-x-1 hover:text-green-400 transition duration-200">
@@ -64,7 +90,7 @@ const Navbar = () => {
               <span className="text-green-400 font-semibold">Olá, {user?.name || "Usuário"}</span>
               <button
                 onClick={handleLogout}
-                className="flex items-center text-right space-x-1 text-red-400 hover:text-red-600 transition duration-200"
+                className="flex items-center space-x-1 text-red-400 hover:text-red-600 transition duration-200"
               >
                 <LogOut size={18} />
                 <span>Sair</span>
@@ -74,18 +100,36 @@ const Navbar = () => {
         </nav>
       </div>
 
-      {/* Menú móvil con animación lenta y suave */}
+      {/* Menú móvil */}
       <div
         className={`lg:hidden transition-all duration-700 ease-in-out overflow-hidden ${
           isMenuOpen ? "max-h-96 opacity-100 translate-y-0 mt-4" : "max-h-0 opacity-0 -translate-y-4"
         }`}
       >
-        <nav className="space-y-2 text-white/90 text-sm font-medium text-right transform transition-transform duration-700 ease-in-out">
+        <nav className="space-y-2 text-white/90 text-sm font-medium text-right">
           <Link to="/" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
           <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
           <Link to="/services" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">SERVIÇOS</Link>
           <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">CONTATO</Link>
           <Link to="/faq" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">PREGUNTAS</Link>
+
+          <Link
+            to="/marketplace"
+            onClick={() => setIsMenuOpen(false)}
+            className="block flex items-center justify-end space-x-1 hover:text-green-400 hover:underline transition duration-200"
+          >
+            <ShoppingCart size={18} />
+            <span>Marketplace</span>
+          </Link>
+
+          <Link
+            to="/cart"
+            onClick={() => setIsMenuOpen(false)}
+            className="block flex items-center justify-end space-x-1 hover:text-green-400 hover:underline transition duration-200"
+          >
+            <ShoppingCart size={18} />
+            <span>Carrito ({cartItemCount})</span>
+          </Link>
 
           {!isAuthenticated ? (
             <>
