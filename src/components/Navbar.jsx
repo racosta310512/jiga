@@ -1,7 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogIn, UserPlus, LogOut, ShoppingCart } from "lucide-react";
+import { LogIn, UserPlus, LogOut, ShoppingCart, ShoppingBag } from "lucide-react";
 import Logo from "../assets/logo1.png";
 import { useAuth } from "../hooks/useAuth";
 import { useCart } from '../hooks/useCart'; 
@@ -62,8 +62,8 @@ const Navbar = () => {
             to="/marketplace"
             className="flex items-center space-x-1 text-white hover:text-green-400 transition duration-200"
           >
-            <ShoppingCart size={18} />
-            <span>MARKETPLACE</span>
+            <ShoppingBag size={18} />
+            <span>LOJA</span>
           </Link>
 
           <Link
@@ -71,7 +71,7 @@ const Navbar = () => {
             className="flex items-center space-x-1 text-white hover:text-green-400 transition duration-200"
           >
             <ShoppingCart size={18} />
-            <span>Carrito ({cartItemCount})</span>
+            <span> ({cartItemCount})</span>
           </Link>
 
           {!isAuthenticated ? (
