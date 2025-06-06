@@ -1,7 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getAllProducts = async () => {
-  const res = await fetch(API_URL);
+  const res = await fetch(`${BASE_URL}/products`);
   if (!res.ok) {
     throw new Error(`Error al obtener productos: ${res.statusText}`);
   }
@@ -9,7 +9,7 @@ export const getAllProducts = async () => {
 };
 
 export const getProductById = async (id) => {
-  const res = await fetch(`${API_URL}/${id}`);
+  const res = await fetch(`${BASE_URL}/products/${id}`);
   if (!res.ok) {
     throw new Error(`Error al obtener producto: ${res.statusText}`);
   }
