@@ -8,17 +8,18 @@ export const CartProvider = ({ children }) => {
   const { isAuthenticated, user } = useAuth() || {}; // Prevención si el AuthContext aún no está disponible
   const [cart, setCart] = useState([]);
 
+  // Cargar carrito al iniciar sesión o si está en localStorage
   useEffect(() => {
     const loadCart = async () => {
       if (isAuthenticated && user?.id) {
         try {
           const token = localStorage.getItem('token');
-          const res = await axios.get(`https://jiga-store.vercel.app/cart/${user.id}`, {
+          const res = await axios.get(`https://jiga-store.vercel.app/cart`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setCart(res.data.items || []);
+          setCart(res.data || []);
         } catch (error) {
-          console.error('Erro ao carregar carrinho do servidor:', error);
+          console.error('Error al cargar carrito del servidor:', error);
           setCart([]);
         }
       } else {
@@ -30,24 +31,26 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [isAuthenticated, user]);
 
+  // Guardar en localStorage si no hay sesión
   useEffect(() => {
     if (!isAuthenticated) {
       localStorage.setItem('cart', JSON.stringify(cart));
     }
   }, [cart, isAuthenticated]);
 
+  // Sincronizar carrito completo con el backend (requiere PUT /cart en backend, ya implementado arriba)
   const syncCartWithServer = async (updatedCart) => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `https://jiga-store.vercel.app/cart/${user.id}`,
+        `https://jiga-store.vercel.app/cart`,
         { items: updatedCart },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
     } catch (error) {
-      console.error('Erro ao sincronizar carrinho com servidor:', error);
+      console.error('Error al sincronizar carrito con el servidor:', error);
     }
   };
 
