@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { useAuth } from '../../hooks/useAuth';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { FaPaypal, FaCreditCard, FaMoneyCheckAlt } from 'react-icons/fa';
 
 const CheckoutPage = () => {
   const { cart, clearCart } = useCart();
+  const { user } = useAuth();
+
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -25,10 +29,38 @@ const CheckoutPage = () => {
     setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value });
   };
 
-  const handleConfirm = () => {
-    // Aquí debes integrar la lógica para enviar los datos al backend.
-    alert(`Pedido realizado con ${paymentMethod}`);
-    clearCart();
+  const handleConfirm = async () => {
+    if (!user) return alert('Debes iniciar sesión para continuar');
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/orders`,
+        {
+          paymentMethod,
+          shippingAddress: {
+            fullName: customerInfo.fullName,
+            address: customerInfo.address,
+            phone: customerInfo.phone,
+          },
+          items: cart.map((item) => ({
+            product: item._id,
+            quantity: item.quantity,
+          })),
+          total: parseFloat(total),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+
+      alert('✅ Pedido realizado con éxito');
+      clearCart();
+    } catch (error) {
+      console.error(error);
+      alert('❌ Hubo un error al procesar el pedido');
+    }
   };
 
   return (
