@@ -5,10 +5,9 @@ import axios from 'axios';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { isAuthenticated, user } = useAuth() || {}; // Prevención si el AuthContext aún no está disponible
+  const { isAuthenticated, user } = useAuth() || {};
   const [cart, setCart] = useState([]);
 
-  // Cargar carrito al iniciar sesión o si está en localStorage
   useEffect(() => {
     const loadCart = async () => {
       if (isAuthenticated && user?.id) {
@@ -31,14 +30,12 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [isAuthenticated, user]);
 
-  // Guardar en localStorage si no hay sesión
   useEffect(() => {
     if (!isAuthenticated) {
       localStorage.setItem('cart', JSON.stringify(cart));
     }
   }, [cart, isAuthenticated]);
 
-  // Sincronizar carrito completo con el backend (requiere PUT /cart en backend, ya implementado arriba)
   const syncCartWithServer = async (updatedCart) => {
     try {
       const token = localStorage.getItem('token');
@@ -54,35 +51,73 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const setAndSyncCart = (updatedCart) => {
+    setCart(updatedCart);
+    if (isAuthenticated) {
+      syncCartWithServer(updatedCart);
+    } else {
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+    }
+  };
+
   const addToCart = (product) => {
     const exists = cart.find((item) => item._id === product._id);
     const updatedCart = exists
       ? cart.map((item) =>
-          item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         )
       : [...cart, { ...product, quantity: 1 }];
 
-    setCart(updatedCart);
-    if (isAuthenticated) syncCartWithServer(updatedCart);
+    setAndSyncCart(updatedCart);
   };
 
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter((item) => item._id !== productId);
-    setCart(updatedCart);
-    if (isAuthenticated) syncCartWithServer(updatedCart);
+    setAndSyncCart(updatedCart);
   };
 
   const clearCart = () => {
     setCart([]);
-    if (!isAuthenticated) {
-      localStorage.removeItem('cart');
-    } else {
+    if (isAuthenticated) {
       syncCartWithServer([]);
+    } else {
+      localStorage.removeItem('cart');
     }
   };
 
+  const increaseQuantity = (productId) => {
+    const updatedCart = cart.map((item) =>
+      item._id === productId
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    );
+    setAndSyncCart(updatedCart);
+  };
+
+  const decreaseQuantity = (productId) => {
+    const updatedCart = cart
+      .map((item) =>
+        item._id === productId
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+      .filter((item) => item.quantity > 0);
+    setAndSyncCart(updatedCart);
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        increaseQuantity,
+        decreaseQuantity,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
