@@ -19,6 +19,8 @@ import Marketplace from "./pages/Marketplace/Marketplace";
 import ProductPage from "./pages/Marketplace/ProductPage";
 import CartPage from "./pages/Marketplace/CartPage";
 import AdminProductPage from "./pages/Admin/AdminProductPage";
+import CheckoutPage from './pages/Marketplace/CheckoutPage';
+
 
 function App() {
   return (
@@ -41,6 +43,7 @@ function App() {
               <Route path="/admin/products" element={<AdminProductPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
             </Routes>
           </main>
           <Footer />

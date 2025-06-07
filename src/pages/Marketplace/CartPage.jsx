@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CartPage = () => {
   const {
@@ -22,7 +22,6 @@ const CartPage = () => {
     try {
       const token = localStorage.getItem('token');
 
-      // 🔁 Transformamos los datos del carrito
       const orderItems = cart.map((item) => ({
         productId: item._id,
         quantity: item.quantity,
@@ -51,7 +50,6 @@ const CartPage = () => {
     }
   };
 
-
   if (cart.length === 0) {
     return (
       <div className="p-6 text-center text-lg font-semibold text-gray-300">
@@ -65,6 +63,7 @@ const CartPage = () => {
   return (
     <div className="p-6 max-w-5xl mx-auto text-white">
       <h2 className="text-3xl font-bold mb-8 text-green-400">🛒 Tu Carrito</h2>
+
       <div className="divide-y divide-[#2f2f44] border border-[#2e2e4d] rounded-2xl bg-[#14141f] shadow-lg">
         {cart.map((item) => (
           <div key={item._id} className="flex items-center justify-between p-4">
@@ -104,17 +103,20 @@ const CartPage = () => {
         ))}
       </div>
 
-      {/* Total y botón */}
-      <div className="mt-8 flex justify-between items-center border-t border-[#2e2e4d] pt-6">
+      {/* Total y botones */}
+      <div className="mt-8 flex flex-col sm:flex-row justify-between items-center border-t border-[#2e2e4d] pt-6 gap-4">
         <div className="text-xl font-semibold text-white-300">
           Total: <span className="text-white-400">R${total.toFixed(2)}</span>
         </div>
-        <button
-          onClick={handleCheckout}
-          className="bg-green-500 hover:bg-green-600 transition text-white px-6 py-2 rounded-xl shadow-lg"
-        >
-          Finalizar Pedido
-        </button>
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            to="/checkout"
+            className="bg-[#22c55e] hover:bg-green-500 text-black font-bold px-6 py-2 rounded-xl shadow-lg transition text-center"
+          >
+            Ordenar
+          </Link>
+        </div>
       </div>
 
       {/* Modal de éxito */}
