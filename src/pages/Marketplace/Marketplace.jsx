@@ -49,7 +49,7 @@ const Marketplace = () => {
     localStorage.setItem('selectedCategory', newCategory);
 
     // Actualizar la URL para permitir navegación clara
-    navigate(`/?category=${newCategory !== 'Todas' ? newCategory : ''}`);
+    navigate(`?category=${newCategory !== 'Todas' ? newCategory : ''}`);
   };
 
   const filteredProducts =
