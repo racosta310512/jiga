@@ -28,12 +28,11 @@ const Navbar = () => {
   }, []);
 
   const cartItemCount = Array.isArray(cart)
-  ? cart.reduce((total, item) => total + item.quantity, 0)
-  : 0;
-
+    ? cart.reduce((total, item) => total + item.quantity, 0)
+    : 0;
 
   return (
-    <header className="bg-[#1F0037] bg-opacity-50 px-6 py-4 shadow-lg z-50 relative">
+    <header className="fixed top-0 w-full bg-[#1F0037] bg-opacity-90 px-6 py-4 shadow-lg z-50">
       <div className="flex justify-between items-center">
         <Link to="/">
           <img src={Logo} alt="Logotipo" className="w-12 h-6" />

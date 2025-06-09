@@ -22,16 +22,30 @@ const CartPage = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const orderItems = cart.map((item) => ({
-        productId: item._id,
-        quantity: item.quantity,
-      }));
+      // Paso 1: Enviar carrito al backend
+      await axios.put(
+        'https://jiga-store.vercel.app/cart',
+        {
+          items: cart.map((item) => ({
+            product: item._id,
+            quantity: item.quantity,
+          })),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
+      // Paso 2: Crear orden en el backend
       const response = await axios.post(
         'https://jiga-store.vercel.app/orders',
         {
-          userId: user.id,
-          items: orderItems,
+          paymentMethod: 'paypal', // o 'pix' o 'card', según lo que quieras permitir
+          shippingAddress: {
+            fullName: user?.name || 'Nombre no disponible',
+            address: 'Dirección de prueba',
+            phone: '00000000000',
+          },
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -111,23 +125,21 @@ const CartPage = () => {
           ))}
       </div>
 
-      {/* Total y botones */}
       <div className="mt-8 flex flex-col sm:flex-row justify-between items-center border-t border-[#2e2e4d] pt-6 gap-4">
         <div className="text-xl font-semibold text-white-300">
           Total: <span className="text-white-400">R${total.toFixed(2)}</span>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            to="/checkout"
+          <button
+            onClick={handleCheckout}
             className="bg-[#22c55e] hover:bg-green-500 text-black font-bold px-6 py-2 rounded-xl shadow-lg transition text-center"
           >
-            Ordenar
-          </Link>
+            Finalizar Pedido
+          </button>
         </div>
       </div>
 
-      {/* Modal de éxito */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-[#111827] rounded-2xl p-8 shadow-xl text-center w-full max-w-md border border-green-600">

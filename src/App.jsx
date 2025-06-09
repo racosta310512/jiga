@@ -1,3 +1,4 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
@@ -21,14 +22,13 @@ import CartPage from "./pages/Marketplace/CartPage";
 import AdminProductPage from "./pages/Admin/AdminProductPage";
 import CheckoutPage from './pages/Marketplace/CheckoutPage';
 
-
 function App() {
   return (
     <CartProvider>
       <Router>
         <div className="min-h-screen bg-gradient-to-br from-[#3F00FF] to-[#069494] text-white font-sans">
           <Navbar />
-          <main>
+          <main className="pt-24"> {/* <-- padding agregado para compensar navbar fija */}
             <BackToTop />
             <ScrollToTop />
             <Routes>
