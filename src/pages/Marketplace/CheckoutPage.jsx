@@ -42,15 +42,11 @@ const CheckoutPage = () => {
             address: customerInfo.address,
             phone: customerInfo.phone,
           },
-          items: cart.map((item) => ({
-            product: item._id,
-            quantity: item.quantity,
-          })),
-          total: parseFloat(total),
         },
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
+            'Content-Type': 'application/json',
           },
         }
       );

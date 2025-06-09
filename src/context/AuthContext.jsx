@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import { createContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
@@ -14,13 +13,23 @@ export function AuthProvider({ children }) {
     if (token && userData) {
       try {
         const decoded = jwtDecode(token);
+
+        // Verifica si el token ha expirado
+        if (decoded.exp * 1000 < Date.now()) {
+          console.warn("Token expirado");
+          logout();
+          return;
+        }
+
         const parsedUser = JSON.parse(userData);
-        const userId = decoded.userId || decoded.id || decoded.sub; // Flexibilidad en el campo
+        const userId = decoded.userId || decoded.id || decoded.sub;
         if (!userId) throw new Error("No se pudo extraer userId del token.");
-        setUser({ ...parsedUser, id: userId });
+
+        // Incluye el token en el objeto user
+        setUser({ ...parsedUser, id: userId, token });
       } catch (err) {
         console.error("Token inválido o datos corruptos:", err);
-        logout(); // Limpia si hay error
+        logout();
       }
     }
   }, []);
@@ -30,9 +39,12 @@ export function AuthProvider({ children }) {
       const decoded = jwtDecode(token);
       const userId = decoded.userId || decoded.id || decoded.sub;
       if (!userId) throw new Error("Token inválido");
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
-      setUser({ ...userData, id: userId });
+
+      // Incluye el token en el objeto user
+      setUser({ ...userData, id: userId, token });
     } catch (err) {
       console.error("Login fallido:", err);
     }
@@ -53,3 +65,4 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
