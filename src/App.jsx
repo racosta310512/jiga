@@ -1,55 +1,71 @@
-// src/App.jsx
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./context/CartContext";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Services from "./pages/Services";
-import Contact from "./pages/Contact";
-import FAQ from "./pages/FAQ";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+// Layout
+import Layout from '../src/components/layout/Layout';
 
-import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
-import ScrollToTop from "./components/ScrollToTop";
-import BackToTop from "./components/BackToTop";
+// Pages
+import Home from '../src/pages/Home';
+import About from '../src/pages/About';
+import Services from '../src/pages/Services';
+import Contact from '../src/pages/Contact';
+import FAQ from '../src/pages/FAQ';
+import Login from '../src/pages/Login';
+import Register from '../src/pages/Register';
 
-import Marketplace from "./pages/Marketplace/Marketplace";
-import ProductPage from "./pages/Marketplace/ProductPage";
-import CartPage from "./pages/Marketplace/CartPage";
-import AdminProductPage from "./pages/Admin/AdminProductPage";
-import CheckoutPage from './pages/Marketplace/CheckoutPage';
+// Marketplace
+import Marketplace from '../src/pages/Marketplace/Marketplace';
+import ProductPage from '../src/pages/Marketplace/ProductPage';
+import CartPage from '../src/pages/Marketplace/CartPage';
+import CheckoutPage from '../src/pages/Marketplace/CheckoutPage';
 
+// Admin
+import AdminProductPage from '../src/pages/Admin/AdminProductPage';
+
+// Components
+import PrivateRoute from '../src/components/common/PrivateRoute/PrivateRoute';
+// import ChatWidget from '../src/components/features/ChatWidget/ChatWidget';
+
+// Config
+import { ROUTES } from '../src/config/constants';
+
+/**
+ * Componente principal de la aplicación
+ */
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <div className="min-h-screen bg-gradient-to-br from-[#3F00FF] to-[#069494] text-white font-sans">
-          <Navbar />
-          <main className="pt-24"> {/* <-- padding agregado para compensar navbar fija */}
-            <BackToTop />
-            <ScrollToTop />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/marketplace/product/:id" element={<ProductPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/admin/products" element={<AdminProductPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </CartProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path={ROUTES.ABOUT} element={<About />} />
+          <Route path={ROUTES.SERVICES} element={<Services />} />
+          <Route path={ROUTES.CONTACT} element={<Contact />} />
+          <Route path={ROUTES.FAQ} element={<FAQ />} />
+          <Route path={ROUTES.LOGIN} element={<Login />} />
+          <Route path={ROUTES.REGISTER} element={<Register />} />
+          
+          {/* Marketplace */}
+          <Route path={ROUTES.MARKETPLACE} element={<Marketplace />} />
+          <Route path={`${ROUTES.PRODUCT}/:id`} element={<ProductPage />} />
+          <Route path={ROUTES.CART} element={<CartPage />} />
+          <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
+          
+          {/* Admin Routes */}
+          <Route
+            path={ROUTES.ADMIN_PRODUCTS}
+            element={
+              <PrivateRoute>
+                <AdminProductPage />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+      </Routes>
+      
+      {/* Chat Widget Global */}
+      {/*<ChatWidget />*/}
+    </Router>
   );
 }
 
