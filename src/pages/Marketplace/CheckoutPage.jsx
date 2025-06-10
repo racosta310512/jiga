@@ -30,34 +30,56 @@ const CheckoutPage = () => {
   };
 
   const handleConfirm = async () => {
-    if (!user) return alert('Debes iniciar sesión para continuar');
+  if (!user) return alert('Debes iniciar sesión para continuar');
+  if (!cart || cart.length === 0) return alert('Tu carrito está vacío');
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/orders`,
-        {
-          paymentMethod,
-          shippingAddress: {
-            fullName: customerInfo.fullName,
-            address: customerInfo.address,
-            phone: customerInfo.phone,
-          },
+  try {
+    const token = localStorage.getItem('token');
+
+    // Paso 1: Sincronizar carrito con backend
+    await axios.put(
+      `${import.meta.env.VITE_API_URL}/cart`,
+      {
+        items: cart.map((item) => ({
+          product: item._id,
+          quantity: item.quantity,
+        })),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      }
+    );
 
-      alert('✅ Pedido realizado con éxito');
-      clearCart();
-    } catch (error) {
-      console.error(error);
-      alert('❌ Hubo un error al procesar el pedido');
-    }
-  };
+    // Paso 2: Crear la orden
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/orders`,
+      {
+        paymentMethod,
+        shippingAddress: {
+          fullName: customerInfo.fullName,
+          address: customerInfo.address,
+          phone: customerInfo.phone,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert('✅ Pedido realizado con éxito');
+    clearCart();
+    window.location.href = '/marketplace'; // o usa navigate si tienes acceso
+  } catch (error) {
+    console.error('❌ Error al confirmar pedido:', error.response?.data || error.message);
+    alert('❌ Hubo un error al procesar el pedido');
+  }
+};
+
+
 
   return (
     <div className="bg-[#111827] min-h-screen text-[#d1d5db] py-10 px-4">

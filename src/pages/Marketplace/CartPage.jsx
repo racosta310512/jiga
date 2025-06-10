@@ -12,9 +12,8 @@ const CartPage = () => {
     increaseQuantity,
     decreaseQuantity,
   } = useCart();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleCheckout = async () => {
     if (!isAuthenticated) return navigate('/login');
@@ -22,9 +21,9 @@ const CartPage = () => {
     try {
       const token = localStorage.getItem('token');
 
-      // Paso 1: Enviar carrito al backend
+      // Paso: sincronizar el carrito con el backend
       await axios.put(
-        'https://jiga-store.vercel.app/cart',
+        `${import.meta.env.VITE_API_URL}/cart`,
         {
           items: cart.map((item) => ({
             product: item._id,
@@ -36,31 +35,11 @@ const CartPage = () => {
         }
       );
 
-      // Paso 2: Crear orden en el backend
-      const response = await axios.post(
-        'https://jiga-store.vercel.app/orders',
-        {
-          paymentMethod: 'paypal', // o 'pix' o 'card', según lo que quieras permitir
-          shippingAddress: {
-            fullName: user?.name || 'Nombre no disponible',
-            address: 'Dirección de prueba',
-            phone: '00000000000',
-          },
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.status === 201 || response.status === 200) {
-        clearCart();
-        setShowSuccessModal(true);
-      } else {
-        alert('Ocurrió un error al finalizar el pedido.');
-      }
+      // Luego de sincronizar, navegar a /checkout
+      navigate('/checkout');
     } catch (error) {
-      console.error('Error en el checkout:', error);
-      alert('Error al finalizar el pedido.');
+      console.error('Error al sincronizar el carrito:', error.response?.data || error.message);
+      alert('❌ Hubo un error al sincronizar tu carrito.');
     }
   };
 
@@ -139,33 +118,6 @@ const CartPage = () => {
           </button>
         </div>
       </div>
-
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-[#111827] rounded-2xl p-8 shadow-xl text-center w-full max-w-md border border-green-600">
-            <svg
-              className="mx-auto mb-4 w-16 h-16 text-green-400"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-            <h2 className="text-2xl font-bold text-green-400 mb-2">¡Pedido realizado!</h2>
-            <p className="text-gray-400 mb-6">Gracias por tu compra. Estamos procesando tu pedido.</p>
-            <button
-              onClick={() => {
-                setShowSuccessModal(false);
-                navigate('/marketplace');
-              }}
-              className="bg-green-500 hover:bg-green-600 transition px-6 py-2 rounded-xl text-white"
-            >
-              Volver al Marketplace
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
