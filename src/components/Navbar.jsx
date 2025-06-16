@@ -1,13 +1,15 @@
 // src/components/Navbar.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogIn, UserPlus, LogOut, ShoppingCart, ShoppingBag } from "lucide-react";
 import Logo from "../assets/logo1.png";
 import { useAuth } from "../hooks/useAuth";
-import { useCart } from '../hooks/useCart'; 
+import { useCart } from '../hooks/useCart';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const { isAuthenticated, user, logout } = useAuth();
   const { cart } = useCart();
   const navigate = useNavigate();
@@ -15,16 +17,25 @@ const Navbar = () => {
   const handleLogout = () => {
     logout(navigate);
     setIsMenuOpen(false);
+    setIsDropdownOpen(false);
   };
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsMenuOpen(false);
-      }
+      if (window.innerWidth >= 1024) setIsMenuOpen(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const cartItemCount = Array.isArray(cart)
@@ -37,11 +48,9 @@ const Navbar = () => {
         <Link to="/">
           <img src={Logo} alt="Logotipo" className="w-12 h-6" />
         </Link>
-
         <button
           className="lg:hidden text-white"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -49,102 +58,48 @@ const Navbar = () => {
           </svg>
         </button>
 
-        {/* Navegación escritorio */}
         <nav className="hidden lg:flex flex-1 justify-end space-x-6 text-white/90 text-sm font-medium items-center">
-          <Link to="/" className="hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
-          <Link to="/about" className="hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
-          <Link to="/services" className="hover:text-green-400 hover:underline transition duration-200">SERVIÇOS</Link>
-          <Link to="/contact" className="hover:text-green-400 hover:underline transition duration-200">CONTATO</Link>
-          <Link to="/faq" className="hover:text-green-400 hover:underline transition duration-200">PREGUNTAS</Link>
-
-          <Link
-            to="/marketplace"
-            className="flex items-center space-x-1 text-white hover:text-green-400 transition duration-200"
-          >
-            <ShoppingBag size={18} />
-            <span>LOJA</span>
+          {/* Enlaces */}
+          <Link to="/" className="hover:text-green-400 hover:underline">INÍCIO</Link>
+          <Link to="/about" className="hover:text-green-400 hover:underline">QUEM SOMOS</Link>
+          <Link to="/services" className="hover:text-green-400 hover:underline">SERVIÇOS</Link>
+          <Link to="/contact" className="hover:text-green-400 hover:underline">CONTATO</Link>
+          <Link to="/faq" className="hover:text-green-400 hover:underline">PREGUNTAS</Link>
+          <Link to="/marketplace" className="flex items-center space-x-1 hover:text-green-400">
+            <ShoppingBag size={18} /><span>LOJA</span>
           </Link>
-
-          <Link
-            to="/cart"
-            className="flex items-center space-x-1 text-white hover:text-green-400 transition duration-200"
-          >
-            <ShoppingCart size={18} />
-            <span> ({cartItemCount})</span>
+          <Link to="/cart" className="flex items-center space-x-1 hover:text-green-400">
+            <ShoppingCart size={18} /><span>({cartItemCount})</span>
           </Link>
 
           {!isAuthenticated ? (
             <>
-              <Link to="/login" className="flex items-center space-x-1 hover:text-green-400 transition duration-200">
-                <LogIn size={18} />
-                <span>Entrar</span>
+              <Link to="/login" className="flex items-center space-x-1 hover:text-green-400">
+                <LogIn size={18} /><span>Entrar</span>
               </Link>
-              <Link to="/register" className="flex items-center space-x-1 hover:text-green-400 transition duration-200">
-                <UserPlus size={18} />
-                <span>Criar conta</span>
+              <Link to="/register" className="flex items-center space-x-1 hover:text-green-400">
+                <UserPlus size={18} /><span>Criar conta</span>
               </Link>
             </>
           ) : (
-            <>
-              <span className="text-green-400 font-semibold">Olá, {user?.name || "Usuário"}</span>
+            <div className="relative" ref={dropdownRef}>
               <button
-                onClick={handleLogout}
-                className="flex items-center space-x-1 text-red-400 hover:text-red-600 transition duration-200"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center space-x-1 text-green-400 font-semibold"
               >
-                <LogOut size={18} />
-                <span>Sair</span>
+                <span>👤 {user?.name || "Usuário"}</span>
+                <svg className={`w-4 h-4 transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-            </>
-          )}
-        </nav>
-      </div>
-
-      {/* Menú móvil */}
-      <div
-        className={`lg:hidden transition-all duration-700 ease-in-out overflow-hidden ${
-          isMenuOpen ? "max-h-96 opacity-100 translate-y-0 mt-4" : "max-h-0 opacity-0 -translate-y-4"
-        }`}
-      >
-        <nav className="space-y-2 text-white/90 text-sm font-medium text-right">
-          <Link to="/" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">INÍCIO</Link>
-          <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">QUEM SOMOS</Link>
-          <Link to="/services" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">SERVIÇOS</Link>
-          <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">CONTATO</Link>
-          <Link to="/faq" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 hover:underline transition duration-200">PREGUNTAS</Link>
-
-          <Link
-            to="/marketplace"
-            onClick={() => setIsMenuOpen(false)}
-            className="block flex items-center justify-end space-x-1 hover:text-green-400 hover:underline transition duration-200"
-          >
-            <ShoppingCart size={18} />
-            <span>Marketplace</span>
-          </Link>
-
-          <Link
-            to="/cart"
-            onClick={() => setIsMenuOpen(false)}
-            className="block flex items-center justify-end space-x-1 hover:text-green-400 hover:underline transition duration-200"
-          >
-            <ShoppingCart size={18} />
-            <span>Carrito ({cartItemCount})</span>
-          </Link>
-
-          {!isAuthenticated ? (
-            <>
-              <Link to="/login" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 transition duration-200">🔑 Entrar</Link>
-              <Link to="/register" onClick={() => setIsMenuOpen(false)} className="block hover:text-green-400 transition duration-200">📝 Criar conta</Link>
-            </>
-          ) : (
-            <>
-              <div className="text-green-400 font-semibold">👤 {user?.name || "Usuário"}</div>
-              <button
-                onClick={handleLogout}
-                className="w-full text-right text-red-400 hover:text-red-600 transition duration-200"
-              >
-                🚪 Sair
-              </button>
-            </>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50 text-sm text-gray-800">
+                  <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">📄 Perfil</Link>
+                  <Link to="/orders" className="block px-4 py-2 hover:bg-gray-100">📦 Meus pedidos</Link>
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-100">🚪 Sair</button>
+                </div>
+              )}
+            </div>
           )}
         </nav>
       </div>

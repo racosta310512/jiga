@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth'; // Asegúrate de ajustar la ruta correctamente
+import useAuthStore from '../stores/authStore'; // ✅ CORREGIDO
 import gsap from 'gsap';
 
 export default function Login() {
@@ -9,7 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth(); // Accedemos al método login del contexto
+  const { login } = useAuthStore(); // ✅ CORREGIDO
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,13 +20,21 @@ export default function Login() {
         password,
       });
 
-      const { token, user } = res.data; // Obtén el token y el objeto user desde la respuesta
-      login(token, user); // Usamos la función login del contexto para actualizar el estado global
+      console.log('Respuesta del backend:', res.data);
+
+      const { token, user } = res.data;
+
+      if (!token || typeof token !== 'string') {
+        throw new Error('Token inválido recibido del servidor');
+      }
+
+      login(token, user); // ✅ Llama correctamente al método del store
 
       alert('Login realizado con éxito!');
-      navigate('/'); // Redirige al dashboard o a la página principal
+      navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Error en el login');
+      console.error(err);
+      setError(err.response?.data?.message || err.message || 'Error en el login');
     }
   };
 
@@ -47,7 +55,7 @@ export default function Login() {
       >
         <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
         {error && <div className="text-red-600 mb-4">{error}</div>}
-        
+
         <input
           type="email"
           placeholder="Email"
@@ -56,7 +64,7 @@ export default function Login() {
           className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
           required
         />
-        
+
         <input
           type="password"
           placeholder="Senha"
@@ -65,7 +73,7 @@ export default function Login() {
           className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-6"
           required
         />
-        
+
         <button
           type="submit"
           className="w-full bg-green-400 text-gray-900 py-3 rounded-lg shadow-md hover:bg-green-300 transition duration-300"

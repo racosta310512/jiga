@@ -29,6 +29,9 @@ import PrivateRoute from '../src/components/common/PrivateRoute/PrivateRoute';
 // Config
 import { ROUTES } from '../src/config/constants';
 
+
+import { ToastContainer } from 'react-toastify';
+
 /**
  * Componente principal de la aplicación
  */
@@ -61,10 +64,12 @@ function App() {
             }
           />
         </Route>
+        
       </Routes>
       
       {/* Chat Widget Global */}
       {/*<ChatWidget />*/}
+      <ToastContainer position="top-right" autoClose={3000} />
     </Router>
   );
 }

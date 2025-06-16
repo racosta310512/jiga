@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../hooks/useCart";
+import { useCart } from "../stores/cartStore";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();

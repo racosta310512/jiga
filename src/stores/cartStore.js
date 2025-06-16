@@ -108,4 +108,5 @@ const useCartStore = create(
   )
 );
 
+export const useCart = useCartStore;
 export default useCartStore;

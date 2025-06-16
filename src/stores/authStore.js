@@ -94,4 +94,5 @@ const useAuthStore = create(
   )
 );
 
+export const useAuth = useAuthStore;
 export default useAuthStore;

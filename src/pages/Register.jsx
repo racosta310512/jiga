@@ -13,6 +13,11 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres');
+      return;
+    }
+
     try {
       await axios.post('https://jiga-store.vercel.app/auth/register', {
         name,
@@ -26,7 +31,6 @@ export default function Register() {
     }
   };
 
-  // Animaciones con GSAP
   useEffect(() => {
     gsap.fromTo(
       '.register-form',
@@ -43,7 +47,7 @@ export default function Register() {
       >
         <h2 className="text-2xl font-bold mb-6 text-center text-white">Criar Conta</h2>
         {error && <div className="text-red-600 mb-4">{error}</div>}
-        
+
         <input
           type="text"
           placeholder="Nome"
@@ -52,7 +56,7 @@ export default function Register() {
           className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
           required
         />
-        
+
         <input
           type="email"
           placeholder="Email"
@@ -61,7 +65,7 @@ export default function Register() {
           className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
           required
         />
-        
+
         <input
           type="password"
           placeholder="Senha"
@@ -70,7 +74,7 @@ export default function Register() {
           className="w-full p-4 bg-transparent border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-6"
           required
         />
-        
+
         <button
           type="submit"
           className="w-full bg-green-400 text-gray-900 py-3 rounded-lg shadow-md hover:bg-green-300 transition duration-300"
@@ -81,3 +85,4 @@ export default function Register() {
     </div>
   );
 }
+

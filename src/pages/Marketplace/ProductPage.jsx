@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../../services/productService';
-import { useCart } from '../../hooks/useCart';
+import { useCart } from '../../stores/cartStore';
 
 const ProductPage = () => {
   const { id } = useParams();

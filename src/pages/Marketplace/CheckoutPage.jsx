@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '../../hooks/useCart';
-import { useAuth } from '../../hooks/useAuth';
+import { useCart } from '../../stores/cartStore';
+import { useAuth } from '../../stores/authStore';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { FaPaypal, FaCreditCard, FaMoneyCheckAlt } from 'react-icons/fa';

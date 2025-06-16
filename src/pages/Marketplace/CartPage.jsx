@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '../../hooks/useCart';
-import { useAuth } from '../../hooks/useAuth';
+import { useCart } from '../../stores/cartStore';
+import { useAuth } from '../../stores/authStore';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
