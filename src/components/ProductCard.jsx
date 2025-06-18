@@ -2,8 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../stores/cartStore";
 
+
 const ProductCard = ({ product }) => {
-  const { addToCart } = useCart();
+  const { addItem } = useCart();
 
   return (
     <div className="bg-[#1c1b29] rounded-2xl shadow-lg p-4 flex flex-col justify-between h-full text-white">
@@ -29,7 +30,7 @@ const ProductCard = ({ product }) => {
               ...product,
               price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
             };
-            addToCart(safeProduct);
+            addItem(safeProduct);
           }}
           className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition w-auto min-w-[140px] text-sm"
         >

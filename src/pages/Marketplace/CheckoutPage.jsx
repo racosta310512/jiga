@@ -4,12 +4,15 @@ import { useAuth } from '../../stores/authStore';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { FaPaypal, FaCreditCard, FaMoneyCheckAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
-  const { cart, clearCart } = useCart();
-  const { user } = useAuth();
+  const items = useCart(state => state.items);
+  const clearCart = useCart(state => state.clearCart);
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
   const [paymentMethod, setPaymentMethod] = useState('');
   const [customerInfo, setCustomerInfo] = useState({
@@ -30,56 +33,52 @@ const CheckoutPage = () => {
   };
 
   const handleConfirm = async () => {
-  if (!user) return alert('Debes iniciar sesión para continuar');
-  if (!cart || cart.length === 0) return alert('Tu carrito está vacío');
+    if (!user) return alert('Debes iniciar sesión para continuar');
+    if (!items || items.length === 0) return alert('Tu carrito está vacío');
 
-  try {
-    const token = localStorage.getItem('token');
-
-    // Paso 1: Sincronizar carrito con backend
-    await axios.put(
-      `${import.meta.env.VITE_API_URL}/cart`,
-      {
-        items: cart.map((item) => ({
-          product: item._id,
-          quantity: item.quantity,
-        })),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+    try {
+      // Sincronizar carrito
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/cart`,
+        {
+          items: items.map((item) => ({
+            product: item._id,
+            quantity: item.quantity,
+          })),
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // Paso 2: Crear la orden
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/orders`,
-      {
-        paymentMethod,
-        shippingAddress: {
-          fullName: customerInfo.fullName,
-          address: customerInfo.address,
-          phone: customerInfo.phone,
+      // Crear orden
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/orders`,
+        {
+          paymentMethod,
+          shippingAddress: {
+            fullName: customerInfo.fullName,
+            address: customerInfo.address,
+            phone: customerInfo.phone,
+          },
         },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    alert('✅ Pedido realizado con éxito');
-    clearCart();
-    window.location.href = '/marketplace'; // o usa navigate si tienes acceso
-  } catch (error) {
-    console.error('❌ Error al confirmar pedido:', error.response?.data || error.message);
-    alert('❌ Hubo un error al procesar el pedido');
-  }
-};
-
-
+      alert('✅ Pedido realizado con éxito');
+      clearCart();
+      navigate('/marketplace');
+    } catch (error) {
+      console.error('❌ Error al confirmar pedido:', error.response?.data || error.message);
+      alert('❌ Hubo un error al procesar el pedido');
+    }
+  };
 
   return (
     <div className="bg-[#111827] min-h-screen text-[#d1d5db] py-10 px-4">
@@ -122,7 +121,7 @@ const CheckoutPage = () => {
 
         {/* Lista de productos */}
         <div className="space-y-4 max-h-[300px] overflow-y-auto pr-4 mb-8">
-          {cart.map((item) => (
+          {items.map((item) => (
             <div key={item._id} className="flex justify-between items-center border-b border-[#2e2e4d] py-3">
               <div>
                 <h2 className="font-semibold">{item.name}</h2>

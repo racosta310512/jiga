@@ -11,28 +11,30 @@ const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
 
-      // Acciones
       login: (token, userData) => {
         try {
           const decoded = jwtDecode(token);
           const userId = decoded.userId || decoded.id || decoded.sub;
-          
+
           if (!userId) {
             throw new Error('Token inválido');
           }
 
-          // Verificar si el token ha expirado
           if (decoded.exp * 1000 < Date.now()) {
             throw new Error('Token expirado');
           }
 
           const user = { ...userData, id: userId, token };
-          
+
           set({
             user,
             token,
             isAuthenticated: true,
           });
+
+          // Guardar manualmente en localStorage por compatibilidad
+          localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
 
           return { success: true };
         } catch (error) {
@@ -48,8 +50,7 @@ const useAuthStore = create(
           token: null,
           isAuthenticated: false,
         });
-        
-        // Limpiar localStorage
+
         localStorage.removeItem(STORAGE_KEYS.TOKEN);
         localStorage.removeItem(STORAGE_KEYS.USER);
       },
@@ -65,7 +66,7 @@ const useAuthStore = create(
 
       checkTokenValidity: () => {
         const { token, logout } = get();
-        
+
         if (!token) return false;
 
         try {
